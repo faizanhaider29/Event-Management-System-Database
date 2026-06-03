@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A premium database-driven Event Management System">
+    <title>{% block title %}Event Management System{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{{ url_for('index') }}">EventX</a>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('events.list_events') }}">Explore Events</a>
+            
+            {% if session.get('user_id') %}
+                {% if session.get('user_role') in ['admin', 'organizer'] %}
+                    <a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
+                {% endif %}
+                <a href="{{ url_for('user.dashboard') }}">My Dashboard</a>
+                <span style="color: var(--text-secondary);">|</span>
+                <span style="color: var(--primary-color); font-weight: 600;">{{ session.get('user_name') }}</span>
+                <a href="{{ url_for('auth.logout') }}" class="btn-secondary" style="padding: 0.3rem 1rem;">Logout</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn-primary">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2026 EventX Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - EventX{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2>Control Panel</h2>
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="{{ url_for('admin.data_overview') }}" class="btn-secondary">Show All Data</a>
+        <a href="{{ url_for('admin.create_event') }}" class="btn-primary">Create New Event</a>
+    </div>
+</div>
+
+<div class="dashboard-stats">
+    {% if session.get('user_role') == 'admin' %}
+    <div class="stat-card">
+        <h4>Total Users</h4>
+        <div class="value">{{ stats.users }}</div>
+    </div>
+    <div class="stat-card">
+        <h4>Total Events</h4>
+        <div class="value">{{ stats.events }}</div>
+    </div>
+    <div class="stat-card">
+        <h4>Total Bookings</h4>
+        <div class="value">{{ stats.bookings }}</div>
+    </div>
+    {% else %}
+    <div class="stat-card">
+        <h4>My Events</h4>
+        <div class="value">{{ stats.events }}</div>
+    </div>
+    {% endif %}
+</div>
+
+<h3 style="margin-bottom: 1rem;">Managed Events</h3>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date & Time</th>
+                <th>Category</th>
+                {% if session.get('user_role') == 'admin' %}
+                <th>Organizer</th>
+                {% endif %}
+                <th>Seats (Total / Available)</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td style="font-weight: 500;">
+                    <a href="{{ url_for('events.detail', event_id=event.id) }}" style="color: var(--primary-color); text-decoration: none;">
+                        {{ event.title }}
+                    </a>
+                </td>
+                <td>{{ event.event_date }} <br> <span style="font-size: 0.85rem; color: var(--text-secondary);">{{ event.event_time }}</span></td>
+                <td><span class="event-badge" style="margin:0; padding: 0.1rem 0.5rem; font-size: 0.8rem;">{{ event.category_name or 'Uncategorized' }}</span></td>
+                
+                {% if session.get('user_role') == 'admin' %}
+                <td>{{ event.company_name or 'Admin' }}</td>
+                {% endif %}
+                
+                <td>{{ event.total_seats }} / <strong style="color: {% if event.available_seats == 0 %}var(--danger-color){% else %}var(--success-color){% endif %};">{{ event.available_seats }}</strong></td>
+                <td>
+                    <span style="text-transform: capitalize; color: var(--text-secondary);">{{ event.status }}</span>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No events found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

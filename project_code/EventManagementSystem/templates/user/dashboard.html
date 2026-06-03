@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}My Dashboard - EventX{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 2rem;">My Dashboard</h2>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Event Title</th>
+                <th>Date & Time</th>
+                <th>Location</th>
+                <th>Booking Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td style="font-weight: 500;">
+                    <a href="{{ url_for('events.detail', event_id=booking.event_id) }}" style="color: var(--primary-color); text-decoration: none;">
+                        {{ booking.title }}
+                    </a>
+                </td>
+                <td>{{ booking.event_date }} at {{ booking.event_time }}</td>
+                <td>{{ booking.location }}</td>
+                <td>{{ booking.booking_date.strftime('%Y-%m-%d') if booking.booking_date else '' }}</td>
+                <td>
+                    {% if booking.status == 'booked' %}
+                        <span style="color: var(--success-color); background: rgba(16,185,129,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">Booked</span>
+                    {% else %}
+                        <span style="color: var(--danger-color); background: rgba(239,68,68,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">Cancelled</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if booking.status == 'booked' %}
+                    <form action="{{ url_for('user.cancel_booking', booking_id=booking.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-danger" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;" onclick="return confirm('Are you sure you want to cancel this ticket?');">Cancel</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 2rem;">You have not booked any events yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

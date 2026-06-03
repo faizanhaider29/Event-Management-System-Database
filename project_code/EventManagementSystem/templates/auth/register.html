@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - EventX{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Create an Account</h2>
+    <form method="POST" action="{{ url_for('auth.register') }}" id="registerForm">
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" class="form-control" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" class="form-control" required placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••">
+        </div>
+        <div class="form-group">
+            <label for="role">I want to:</label>
+            <select id="role" name="role" class="form-control" onchange="toggleOrganizerFields()">
+                <option value="user">Attend Events (User)</option>
+                <option value="organizer">Organize Events (Organizer)</option>
+            </select>
+        </div>
+        
+        <div id="organizerFields" style="display: none;">
+            <div class="form-group">
+                <label for="company_name">Company/Organization Name</label>
+                <input type="text" id="company_name" name="company_name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="contact_info">Contact Phone</label>
+                <input type="text" id="contact_info" name="contact_info" class="form-control">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Sign Up</button>
+    </form>
+    <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary);">
+        Already have an account? <a href="{{ url_for('auth.login') }}" style="color: var(--primary-color);">Log In</a>
+    </p>
+</div>
+
+<script>
+function toggleOrganizerFields() {
+    var role = document.getElementById('role').value;
+    var orgFields = document.getElementById('organizerFields');
+    if(role === 'organizer') {
+        orgFields.style.display = 'block';
+    } else {
+        orgFields.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

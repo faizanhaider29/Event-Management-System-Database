@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Events - EventX{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2>Explore Events</h2>
+    
+    <form method="GET" action="{{ url_for('events.list_events') }}" style="display: flex; gap: 1rem;">
+        <input type="text" name="search" placeholder="Search events..." class="form-control" style="width: 250px;" value="{{ request.args.get('search', '') }}">
+        <select name="category" class="form-control" style="width: 200px;">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if request.args.get('category')|string == cat.id|string %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary">Filter</button>
+    </form>
+</div>
+
+{% if events %}
+<div class="events-grid">
+    {% for event in events %}
+    <div class="event-card">
+        <div class="event-card-img">
+            <span style="font-size: 4rem; color: rgba(255,255,255,0.2);">📅</span>
+        </div>
+        <div class="event-card-body">
+            {% if event.category_name %}
+            <span class="event-badge">{{ event.category_name }}</span>
+            {% endif %}
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.description[:100] }}{% if event.description|length > 100 %}...{% endif %}</p>
+            <div class="event-meta">
+                <span>📍 {{ event.location }}</span>
+                <span>🕒 {{ event.event_date }}</span>
+            </div>
+            <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn-secondary" style="text-align: center;">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="hero" style="padding: 4rem 0;">
+    <h3>No events found.</h3>
+    <p>Try adjusting your search filters.</p>
+</div>
+{% endif %}
+{% endblock %}

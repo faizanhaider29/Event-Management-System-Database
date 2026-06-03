@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Event - EventX{% endblock %}
+
+{% block content %}
+<div class="form-container" style="max-width: 800px;">
+    <h2>Create New Event</h2>
+    <form method="POST" action="{{ url_for('admin.create_event') }}">
+        
+        <div class="form-group">
+            <label for="title">Event Title</label>
+            <input type="text" id="title" name="title" class="form-control" required placeholder="e.g. Annual Tech Conference 2026">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Event Description</label>
+            <textarea id="description" name="description" class="form-control" rows="5" required placeholder="Describe what the event is about..."></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="event_date">Date</label>
+                <input type="date" id="event_date" name="event_date" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="event_time">Time</label>
+                <input type="time" id="event_time" name="event_time" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" class="form-control" required placeholder="e.g. Grand Hotel Conference Room">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="total_seats">Total Capacity (Seats)</label>
+                <input type="number" id="total_seats" name="total_seats" class="form-control" min="1" required placeholder="e.g. 100">
+            </div>
+            <div class="form-group">
+                <label for="category_id">Category</label>
+                <select id="category_id" name="category_id" class="form-control">
+                    <option value="">None</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        {% if session.get('user_role') == 'admin' %}
+        <div class="form-group">
+            <label for="organizer_id">Assign Organizer (Optional)</label>
+            <select id="organizer_id" name="organizer_id" class="form-control">
+                <option value="">System Admin (Self)</option>
+                {% for org in organizers %}
+                <option value="{{ org.id }}">{{ org.company_name or org.user_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn-primary" style="flex: 1;">Publish Event</button>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-secondary" style="flex: 1; text-align: center;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

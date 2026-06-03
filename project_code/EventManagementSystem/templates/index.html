@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}EventX - Find Your Next Experience{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Discover Incredible Events</h1>
+    <p>Join thousands of people in discovering and attending the best tech, social, and professional events around you.</p>
+    <a href="{{ url_for('events.list_events') }}" class="btn-primary" style="font-size: 1.1rem; padding: 0.75rem 2rem;">Explore All Events</a>
+</div>
+
+{% if events %}
+<div style="margin-bottom: 2rem;">
+    <h2 style="font-size: 2rem; margin-bottom: 1.5rem;">Upcoming Events</h2>
+    <div class="events-grid">
+        {% for event in events %}
+        <div class="event-card">
+            <div class="event-card-img">
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--brand-gradient); opacity: 0.8; filter: blur(10px);"></div>
+            </div>
+            <div class="event-card-body">
+                {% if event.category_name %}
+                <span class="event-badge">{{ event.category_name }}</span>
+                {% endif %}
+                <h3>{{ event.title }}</h3>
+                <p>{{ event.description[:100] }}{% if event.description|length > 100 %}...{% endif %}</p>
+                <div class="event-meta">
+                    <span>📍 {{ event.location }}</span>
+                    <span>🕒 {{ event.event_date }}</span>
+                </div>
+                <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn-secondary" style="text-align: center;">View Details</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
